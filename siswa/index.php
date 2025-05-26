@@ -3,7 +3,7 @@ header("Content-Type: application/json");
 
 // Koneksi ke database
 try {
-    $koneksi = mysqli_connect("localhost", "root", "", "api-native");
+    $koneksi = mysqli_connect("localhost", "root", "", "sekolah_db");
     mysqli_set_charset($koneksi, "utf8");
 } catch (Exception $e) {
     echo json_encode(["message" => "Connection error: " . $e->getMessage()]);
@@ -16,7 +16,7 @@ switch ($method) {
     case 'GET':
      if (array_key_exists('id', $_GET)) {
          $id = mysqli_real_escape_string($koneksi, $_GET['id']);
-         $query = mysqli_query($koneksi, "SELECT * FROM siswa WHERE id = '$id'");
+         $query = mysqli_query($koneksi, "SELECT * FROM siswabaru WHERE id = '$id'");
          $result = mysqli_fetch_assoc($query);
 
          if ($result) {
@@ -25,7 +25,7 @@ switch ($method) {
              echo json_encode(["message" => "Data yang ber ID = $id tidak ditemukan"]);
          }
      } elseif (count($_GET) === 0) {
-         $query = mysqli_query($koneksi, "SELECT * FROM siswa");
+         $query = mysqli_query($koneksi, "SELECT * FROM siswabaru");
          $results = mysqli_fetch_all($query, MYSQLI_ASSOC);
          echo json_encode($results);
      } else {
@@ -97,7 +97,7 @@ switch ($method) {
         if (isset($data['id'])) {
             $id = mysqli_real_escape_string($koneksi, $data['id']);
 
-            $delete = mysqli_query($koneksi, "DELETE FROM siswa WHERE id = '$id'");
+            $delete = mysqli_query($koneksi, "DELETE FROM siswabaru WHERE id = '$id'");
 
             if ($delete) {
                 if (mysqli_affected_rows($koneksi) > 0) {
