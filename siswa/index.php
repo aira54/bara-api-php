@@ -46,7 +46,7 @@ switch ($method) {
           $nama = mysqli_real_escape_string($koneksi, $data['nama']);
           $kelas = mysqli_real_escape_string($koneksi, $data['kelas']);
 
-          $insert = mysqli_query($koneksi, "INSERT INTO siswa (nama, kelas) VALUES ('$nama', '$kelas')");
+          $insert = mysqli_query($koneksi, "INSERT INTO siswabaru (nama, kelas) VALUES ('$nama', '$kelas')");
 
           if ($insert) {
                 $last_id = mysqli_insert_id($koneksi);
@@ -75,7 +75,7 @@ switch ($method) {
         $nama = mysqli_real_escape_string($koneksi, $data['nama']);
         $kelas = mysqli_real_escape_string($koneksi, $data['kelas']);
 
-        $update = mysqli_query($koneksi, "UPDATE siswa SET nama = '$nama', kelas = '$kelas' WHERE id = '$id'");
+        $update = mysqli_query($koneksi, "UPDATE siswabaru SET nama = '$nama', kelas = '$kelas' WHERE id = '$id'");
 
         if ($update) {
             if (mysqli_affected_rows($koneksi) > 0) {
@@ -93,26 +93,22 @@ switch ($method) {
 
 
     case 'DELETE':
-        parse_str(file_get_contents("php://input"), $data);
-        if (isset($data['id'])) {
-            $id = mysqli_real_escape_string($koneksi, $data['id']);
+    $data = json_decode(file_get_contents("php://input"), true);
+    if (isset($data['id'])) {
+        $id = mysqli_real_escape_string($koneksi, $data['id']);
 
-            $delete = mysqli_query($koneksi, "DELETE FROM siswabaru WHERE id = '$id'");
+        $delete = mysqli_query($koneksi, "DELETE FROM siswabaru WHERE id = '$id'");
 
-            if ($delete) {
-                if (mysqli_affected_rows($koneksi) > 0) {
-                    echo json_encode(["message" => "Data berhasil dihapus"]);
-                } else {
-                    echo json_encode(["message" => "ID tidak ditemukan, tidak ada data yang dihapus"]);
-                }
+        if ($delete) {
+            if (mysqli_affected_rows($koneksi) > 0) {
+                echo json_encode(["message" => "Data berhasil dihapus"]);
+            } else {
+                echo json_encode(["message" => "ID tidak ditemukan, tidak ada data yang dihapus"]);
             }
-
-        } else {
-            echo json_encode(["message" => "ID tidak ditemukan"]);
         }
-        break;
 
-    default:
-        echo json_encode(["message" => "Metode tidak diizinkan"]);
-        break;
+    } else {
+        echo json_encode(["message" => "ID tidak ditemukan"]);
+    }
+    break;
 }
