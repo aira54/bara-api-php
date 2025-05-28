@@ -92,8 +92,18 @@ switch ($method) {
     break;
 
 
-    case 'DELETE':
-    $data = json_decode(file_get_contents("php://input"), true);
+   case 'DELETE':
+    $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
+
+    // Cek tipe konten untuk memilih metode parsing
+    if (stripos($contentType, 'application/json') !== false) {
+        // Raw JSON
+        $data = json_decode(file_get_contents("php://input"), true);
+    } else {
+        // x-www-form-urlencoded
+        parse_str(file_get_contents("php://input"), $data);
+    }
+
     if (isset($data['id'])) {
         $id = mysqli_real_escape_string($koneksi, $data['id']);
 
@@ -105,10 +115,12 @@ switch ($method) {
             } else {
                 echo json_encode(["message" => "ID tidak ditemukan, tidak ada data yang dihapus"]);
             }
+        } else {
+            echo json_encode(["message" => "Gagal menghapus data"]);
         }
-
     } else {
         echo json_encode(["message" => "ID tidak ditemukan"]);
     }
     break;
+
 }
